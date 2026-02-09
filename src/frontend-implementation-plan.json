@@ -1,0 +1,107 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Real Excel import/export UI and in-repo production deployment guide (frontend-only)",
+  "requirements": [
+    {
+      "id": "REQ-3",
+      "summary": "Replace placeholder template download UI with real .xlsx template generation based on selected form fields, including an instructions sheet.",
+      "acceptanceCriteria": [
+        "Clicking “Download Template” downloads a valid .xlsx file (not an alert) for the selected form.",
+        "The template includes a header row that matches the form field names (and/or display labels) in a consistent, documented way.",
+        "The workbook includes a second sheet with plain-English instructions for how to fill the template."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/package.json",
+          "operation": "modify",
+          "description": "Add a production-ready XLSX generation/parsing dependency (e.g., SheetJS/xlsx) for real Excel template creation and downloads."
+        },
+        {
+          "path": "frontend/src/utils/excelWorkbook.ts",
+          "operation": "create",
+          "description": "Implement reusable helpers to build and download an .xlsx workbook for a given form definition (including a header row mapping strategy and an instructions sheet)."
+        },
+        {
+          "path": "frontend/src/components/excel/ExcelManager.tsx",
+          "operation": "modify",
+          "description": "Replace the current alert-based template download handler with real workbook generation using the new Excel utilities; use selected form definition to derive columns and include an instructions sheet."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Implement real client-side Excel import with parsing, validation preview (valid/invalid rows + errors), and import of valid rows into the backend while updating import status.",
+      "acceptanceCriteria": [
+        "Uploading an .xlsx file produces a parsed preview (no placeholder alerts) showing row-level validation results.",
+        "User can confirm import of valid rows; imported rows appear in the relevant module list (students/enquiries/fees/attendance or the selected form’s entities).",
+        "Invalid rows are not imported and display clear error messages referencing the row and the problematic column/field.",
+        "The backend records import status in import history so the existing import status queries reflect the latest import summary."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/excelImport.ts",
+          "operation": "create",
+          "description": "Add client-side XLSX parsing to structured row objects, plus validation utilities that compare rows against the selected form definition (required fields, field types) and produce row-level error messages."
+        },
+        {
+          "path": "frontend/src/utils/formFieldCoercion.ts",
+          "operation": "create",
+          "description": "Implement value normalization/coercion helpers (e.g., date parsing/format normalization, number parsing, checkbox boolean normalization, text trimming) aligned to the form field types used by the UI."
+        },
+        {
+          "path": "frontend/src/components/excel/ExcelManager.tsx",
+          "operation": "modify",
+          "description": "Implement upload flow: parse XLSX client-side, validate against the selected form definition, render a preview of valid/invalid rows with errors, and on confirm import valid rows via existing entity creation calls; then update import status via existing import-status mutation and ensure relevant entity queries are invalidated/refetched."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add any small supporting React Query helpers needed by the Excel import UI (e.g., convenience wrapper for fetching a selected form definition and/or entities for a selected form) without changing existing hook behavior."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Implement real Excel export for a selected form by fetching current records and generating a downloadable .xlsx with consistent column order and basic metadata columns.",
+      "acceptanceCriteria": [
+        "Clicking “Export to Excel” downloads a valid .xlsx file (not an alert) containing the selected data.",
+        "Exported rows match the current backend records for the selected form.",
+        "The exported file opens cleanly in Excel/LibreOffice with readable headers."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/excelExport.ts",
+          "operation": "create",
+          "description": "Implement workbook generation for exporting entity records to .xlsx using a consistent column order derived from the selected form definition and including metadata columns when appropriate (e.g., record id, createdAt)."
+        },
+        {
+          "path": "frontend/src/components/excel/ExcelManager.tsx",
+          "operation": "modify",
+          "description": "Replace the current export alert with a real export flow that fetches records for the selected form and downloads a generated .xlsx using the export utility."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Add an in-repo production deployment workflow guide for deploying to IC mainnet, including required environment variables and post-deploy verification steps for persistence and Excel import/export.",
+      "acceptanceCriteria": [
+        "A written production deployment guide exists in-repo (English), covering: prerequisites, `dfx deploy --network ic`, environment variables, admin bootstrap token usage, and how to obtain/open the deployed frontend canister URL.",
+        "Following the guide results in a working deployed app where a user can log in via Internet Identity and access the dashboard.",
+        "The guide includes a minimal checklist for validating persistence and Excel import/export in production."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/PRODUCTION_DEPLOYMENT.md",
+          "operation": "create",
+          "description": "Write an English production deployment guide for IC mainnet covering prerequisites, build steps, `dfx deploy --network ic`, required environment variables (including CAFFEINE_ADMIN_TOKEN), how admin bootstrap token is supplied to the app, how to locate/open the deployed frontend canister URL, and a minimal verification checklist for persistence and Excel template/import/export."
+        },
+        {
+          "path": "frontend/src/hooks/useActor.ts",
+          "operation": "modify",
+          "description": "Align in-app admin bootstrap token naming/expectations with the production guide (documented parameter name and behavior), ensuring the workflow described in the guide matches the actual frontend behavior."
+        }
+      ]
+    }
+  ]
+}

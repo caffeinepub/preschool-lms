@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 4,
+  "summary": "Preschool LMS is a web-based preschool learning/administration management dashboard built with a React + Tailwind frontend and a Motoko (Internet Computer) backend canister. It supports Internet Identity authentication, role-based access control (admin/user/guest), admin-configurable dynamic forms, dropdown option lists, generic entity record creation/listing (used for Students, Enquiries, Fees, Attendance modules), basic report definition storage, and import-status tracking. The frontend uses TanStack React Query for backend access via a generated canister actor, includes an admin panel for configuration, and provides UI scaffolding for Excel import/export workflows.",
+  "existing_features": [
+    {
+      "id": "IF-1",
+      "title": "Internet Identity authentication and session management",
+      "synonyms": [
+        "II login",
+        "DFINITY AuthClient authentication"
+      ],
+      "description": "Provides login via Internet Identity, persists identity across reloads, and supports logout/clear. Exposes status flags (initializing/logging-in/success/error) through a React context provider and hook.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-2",
+      "title": "Backend actor creation with identity binding and query invalidation",
+      "synonyms": [
+        "useActor hook",
+        "canister actor lifecycle"
+      ],
+      "description": "Creates a typed backend canister actor either anonymously or with the current Internet Identity. On identity change, invalidates and refetches all React Query queries dependent on the actor to keep data consistent.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-3",
+      "title": "Secret-based admin bootstrap and role-based access control (RBAC)",
+      "synonyms": [
+        "access control",
+        "admin token bootstrap",
+        "user roles"
+      ],
+      "description": "Motoko access-control module assigns roles (#admin/#user/#guest). The first non-anonymous principal to initialize with the correct secret (matched against CAFFEINE_ADMIN_TOKEN env var) becomes admin; others become users. Backend enforces permissions on all major operations and supports admin role assignment.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-4",
+      "title": "Forms API (create, list, fetch) with admin-only write access",
+      "synonyms": [
+        "dynamic form definitions",
+        "form management"
+      ],
+      "description": "Backend stores FormDefinition objects keyed by formName, supports createForm (admin-only), getForm, and getAllForms (user-readable). Frontend exposes corresponding React Query hooks and an admin UI (FormBuilder) for creating forms with ordered fields and basic types.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-5",
+      "title": "Dropdown option management API and UI",
+      "synonyms": [
+        "dropdown lists",
+        "lookup tables"
+      ],
+      "description": "Backend supports adding dropdown options (admin-only) and listing options per dropdown name (user-readable). Frontend includes DropdownManager to select a dropdown type, add options, and view current options.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-6",
+      "title": "Generic entity record storage and retrieval",
+      "synonyms": [
+        "record CRUD (partial)",
+        "entities"
+      ],
+      "description": "Backend supports createEntity (user), getEntity (user), and getEntities (user) for records grouped by formName. Records include id, formName, (key,value) data pairs, createdAt, and updatedAt (unused). Frontend provides React Query hooks and module views consuming these records.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-7",
+      "title": "Schema-driven data entry dialog for creating records",
+      "synonyms": [
+        "AddEntityDialog",
+        "dynamic form rendering"
+      ],
+      "description": "Reusable frontend dialog that loads a form definition by name and renders inputs based on fieldType (Text/Number/Date/Textarea/Checkbox/Dropdown when options exist). Submits collected values as (key,value) pairs to createEntity and closes on success.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-8",
+      "title": "Operational modules for Students, Enquiries, Fees, and Attendance",
+      "synonyms": [
+        "module pages",
+        "management tabs"
+      ],
+      "description": "Implements searchable table views for key preschool workflows using entity data: Students, Enquiries, Fees, and Attendance. Each module supports opening AddEntityDialog to create new records and provides basic status badges and empty/loading states.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-9",
+      "title": "Dashboard overview with KPIs and charts",
+      "synonyms": [
+        "overview tab",
+        "analytics overview"
+      ],
+      "description": "DashboardOverview aggregates entity counts for students/enquiries/fees/attendance, computes KPIs (pending fees, today’s attendance), and renders Recharts bar/pie visualizations along with a quick-start guide.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-10",
+      "title": "Report definition storage and listing",
+      "synonyms": [
+        "custom reports",
+        "report configuration"
+      ],
+      "description": "Backend supports createReport (admin-only), getReport, and getAllReports (user). Frontend lists custom reports in ReportsModule and shows predefined report cards; an admin ReportBuilder view displays a placeholder plus existing report definitions.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-11",
+      "title": "Import status tracking API",
+      "synonyms": [
+        "bulk import status",
+        "import history"
+      ],
+      "description": "Backend supports updateImportStatus (admin-only) and getImportStatus (user) per formName for tracking Excel/bulk import outcomes (row counts, errors, timestamp). Frontend provides hooks to read/update this status.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-12",
+      "title": "Excel workflow UI scaffolding",
+      "synonyms": [
+        "ExcelManager",
+        "template download/upload/export UI"
+      ],
+      "description": "Frontend provides a tabbed UI for downloading templates, uploading Excel files, and exporting data. Current handlers are placeholders (alerts) without actual Excel generation/import/export logic.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-13",
+      "title": "Caffeine blob-storage maintenance mixin in backend",
+      "synonyms": [
+        "blob GC",
+        "gateway authorization list",
+        "cycles top-up"
+      ],
+      "description": "Backend includes a storage mixin implementing gateway principal authorization refresh, dead-blob listing and pruning confirmation, blob liveness checks, and a cashier refill/top-up pathway using cycles and environment-configured cashier principal.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-14",
+      "title": "Secret URL parameter handling for admin token",
+      "synonyms": [
+        "hash-based secret parameters",
+        "session-persisted token"
+      ],
+      "description": "Frontend utilities extract sensitive parameters from the URL hash fragment, persist them in sessionStorage, and clear them from the URL to reduce leakage risk. useActor uses this to pass the admin bootstrap token to the backend initialization call.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-15",
+      "title": "Theming, UI framework integration, and toast notifications",
+      "synonyms": [
+        "Tailwind theming",
+        "next-themes",
+        "sonner toasts"
+      ],
+      "description": "UI uses Tailwind with OKLCH CSS variables (light/dark) and next-themes ThemeProvider. Mutations display success/error notifications via sonner toasts. Layout includes shared Header/Footer with responsive navigation and logout.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-placeholder-excel-workflow-ui-with-functional-excel-template-generation-allow-users-to-select-a-form-and-download-an-xlsx-template-whose-columns-are-derived-from-the-selected-form-s-fields-including-an-instructions-sheet-in-the-workbook",
+      "title": "Replace the placeholder Excel workflow UI with functional Excel template generation: allow users to select a form and download an .xlsx template whose columns are derived from the selected form’s fields, including an instructions sheet in the workbook.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-real-excel-import-allow-users-to-upload-a-filled-xlsx-file-parse-it-client-side-validate-rows-against-the-selected-form-definition-required-fields-field-types-show-a-preview-of-valid-invalid-rows-with-error-messages-and-then-import-valid-rows-into-the-backend-as-entity-records",
+      "title": "Implement real Excel import: allow users to upload a filled .xlsx file, parse it client-side, validate rows against the selected form definition (required fields, field types), show a preview of valid/invalid rows with error messages, and then import valid rows into the backend as entity records.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-real-excel-export-allow-users-to-export-existing-records-for-a-selected-form-to-a-downloadable-xlsx-file-with-a-consistent-column-order-based-on-the-form-definition-and-include-basic-metadata-columns-when-appropriate-e-g-record-id-createdat",
+      "title": "Implement real Excel export: allow users to export existing records for a selected form to a downloadable .xlsx file with a consistent column order based on the form definition and include basic metadata columns when appropriate (e.g., record id, createdAt).",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-a-production-deployment-workflow-for-the-internet-computer-document-and-verify-the-steps-to-build-and-deploy-the-frontend-and-backend-to-the-ic-mainnet-including-required-environment-variables-e-g-caffeine-admin-token-and-post-deploy-verification-steps",
+      "title": "Provide a production deployment workflow for the Internet Computer: document and verify the steps to build and deploy the frontend and backend to the IC mainnet, including required environment variables (e.g., CAFFEINE_ADMIN_TOKEN) and post-deploy verification steps.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Provide VSCode/local development setup instructions and project requirements (tooling, dependencies, run/build/deploy steps) for the Preschool LMS stack",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add stable/persistent backend storage so forms/entities/dropdowns/reports/import history survive canister upgrades/restarts",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Implement real Excel import/export workflows (template generation, upload/validate/preview/import, export) for major entities",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Provide production deployment process for the Preschool LMS (build/release steps, environment config, deployment to IC, operational guidance)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Implement upgrade-safe persistent storage in the Motoko backend so that forms, dropdown options, reports, entities, import history, and authorization state survive canister upgrades and restarts.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "If required by the existing project’s upgrade path, add/modify backend upgrade hooks (and create backend/migration.mo only if necessary) to safely migrate existing in-memory data into stable storage during upgrade and restore it after upgrade.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Add any necessary backend APIs to support bulk import efficiently (e.g., a bulk create endpoint and a structured response), while keeping existing single-record create and list APIs working unchanged.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "status": "pending"
+    }
+  ],
+  "architecturalNotes": [
+    "Frontend is a React SPA using TanStack React Query for all remote state (queries/mutations) with cache invalidation on mutations.",
+    "Authentication uses DFINITY Internet Identity (AuthClient) with identity persisted across reloads; logout clears React Query cache.",
+    "Backend communication is via a generated canister actor created in a dedicated hook (useActor), with automatic re-creation when identity changes.",
+    "Backend implements RBAC in Motoko: roles (#admin/#user/#guest) stored in an in-memory Map keyed by Principal; permission checks gate all operations.",
+    "Admin bootstrap uses a shared secret: backend reads CAFFEINE_ADMIN_TOKEN env var; the first caller providing the matching secret becomes admin, others become user.",
+    "Dynamic data model: form definitions define fields/types and are used by the frontend to render data-entry dialogs (schema-driven UI).",
+    "Backend uses in-memory Maps/Lists for forms, dropdown options, reports, entities, and import status (no stable persistence shown).",
+    "Backend includes a Caffeine blob-storage maintenance mixin for gateway authorization, dead-blob pruning, and cycles top-up/refill interactions.",
+    "UI is componentized into modules (Students/Enquiries/Fees/Attendance/Reports/Excel/Admin) and a KPI/Charts overview page; styling via Tailwind + OKLCH CSS variables and next-themes for theming."
+  ],
+  "knownIssues": [
+    "User profile functionality is effectively stubbed: useGetCallerUserProfile always returns a hardcoded name ('Admin User') and never returns null, so ProfileSetup is likely unreachable; useSaveCallerUserProfile does not persist anything to the backend.",
+    "ProfileSetup hardcodes role to UserRole.admin on save, which does not reflect backend role assignment and could be misleading.",
+    "ExcelManager download/upload/export actions are placeholder alerts; there is no real Excel generation, validation, or import/export integration.",
+    "ReportBuilder UI is a placeholder; ReportsModule 'Generate Report' / 'Run Report' buttons are non-functional beyond listing stored definitions.",
+    "FormBuilder does not provide a way to set dropdown field options (FormField.options), so dropdown fields may not render usable selects in AddEntityDialog unless options are prepopulated elsewhere.",
+    "AddEntityDialog resets formData to {} on save but only reinitializes when the form definition changes; reopening the dialog may start with missing keys until user interacts.",
+    "Backend persistence is in-memory only; forms/entities/dropdowns/reports/import history appear to be lost on canister upgrade/restart (no stable var usage shown).",
+    "EntityRecord ID generation is simplistic (data.size + timestamp string) and may risk collisions or produce non-opaque IDs; also relies on potential method-style toText usage that may be fragile depending on Motoko base/core APIs.",
+    "Blob storage env var name appears misspelled (CAFFFEINE_STORAGE_CASHIER_PRINCIPAL) which may cause runtime traps if the intended variable name differs."
+  ],
+  "isFixRequest": false,
+  "generatedImages": [],
+  "gameProjectType": "none",
+  "projectName": "Preschool LMS",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0,
+  "requiresBackendChanges": true,
+  "requiresFrontendChanges": true
+}

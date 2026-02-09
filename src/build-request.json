@@ -1,0 +1,148 @@
+{
+  "kind": "build_request",
+  "title": "Add upgrade-safe persistent storage, real Excel import/export, and production deployment workflow",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Implement upgrade-safe persistent storage in the Motoko backend so that forms, dropdown options, reports, entities, import history, and authorization state survive canister upgrades and restarts.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "✅ persistent storage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After creating forms/dropdowns/reports/entities and updating import status, redeploying/upgrading the canister retains all previously stored data.",
+        "Authorization/admin bootstrap state remains intact after upgrade (no unintended role reset).",
+        "No breaking changes to existing frontend calls (existing methods still work as before)."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "If required by the existing project’s upgrade path, add/modify backend upgrade hooks (and create backend/migration.mo only if necessary) to safely migrate existing in-memory data into stable storage during upgrade and restore it after upgrade.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "✅ persistent storage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Upgrading from the current version to the new version does not trap and results in correct restored data structures.",
+        "A clear, minimal migration strategy is present only if needed to preserve old state (no unnecessary migration file added)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Replace the placeholder Excel workflow UI with functional Excel template generation: allow users to select a form and download an .xlsx template whose columns are derived from the selected form’s fields, including an instructions sheet in the workbook.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "✅ real Excel import/export"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking “Download Template” downloads a valid .xlsx file (not an alert) for the selected form.",
+        "The template includes a header row that matches the form field names (and/or display labels) in a consistent, documented way.",
+        "The workbook includes a second sheet with plain-English instructions for how to fill the template."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Implement real Excel import: allow users to upload a filled .xlsx file, parse it client-side, validate rows against the selected form definition (required fields, field types), show a preview of valid/invalid rows with error messages, and then import valid rows into the backend as entity records.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "✅ real Excel import/export"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Uploading an .xlsx file produces a parsed preview (no placeholder alerts) showing row-level validation results.",
+        "User can confirm import of valid rows; imported rows appear in the relevant module list (students/enquiries/fees/attendance or the selected form’s entities).",
+        "Invalid rows are not imported and display clear error messages referencing the row and the problematic column/field.",
+        "The backend records import status in import history so the existing import status queries reflect the latest import summary."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Implement real Excel export: allow users to export existing records for a selected form to a downloadable .xlsx file with a consistent column order based on the form definition and include basic metadata columns when appropriate (e.g., record id, createdAt).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "✅ real Excel import/export"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking “Export to Excel” downloads a valid .xlsx file (not an alert) containing the selected data.",
+        "Exported rows match the current backend records for the selected form.",
+        "The exported file opens cleanly in Excel/LibreOffice with readable headers."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Add any necessary backend APIs to support bulk import efficiently (e.g., a bulk create endpoint and a structured response), while keeping existing single-record create and list APIs working unchanged.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "✅ real Excel import/export"
+        ]
+      },
+      "acceptanceCriteria": [
+        "There is a backend method suitable for importing many rows in one request for a given form.",
+        "The bulk import method enforces the same authorization rules as existing entity creation (users must be authorized).",
+        "The bulk import method returns enough information for the frontend to display a summary (counts and per-row errors if applicable)."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Provide a production deployment workflow for the Internet Computer: document and verify the steps to build and deploy the frontend and backend to the IC mainnet, including required environment variables (e.g., CAFFEINE_ADMIN_TOKEN) and post-deploy verification steps.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "✅ production deployment"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A written production deployment guide exists in-repo (English), covering: prerequisites, `dfx deploy --network ic`, environment variables, admin bootstrap token usage, and how to obtain/open the deployed frontend canister URL.",
+        "Following the guide results in a working deployed app where a user can log in via Internet Identity and access the dashboard.",
+        "The guide includes a minimal checklist for validating persistence and Excel import/export in production."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor with all logic in backend/main.mo; only add backend/migration.mo if an upgrade migration is necessary.",
+    "Do not edit files under frontend/src/components/ui or any other frontend immutable paths listed in SYSTEM_CONTEXT.",
+    "Use English for any user-facing text."
+  ],
+  "nonGoals": [
+    "Implementing third-party authentication providers other than Internet Identity.",
+    "Adding external databases or non-IC storage systems.",
+    "Building real-time features (WebSockets/push notifications).",
+    "Implementing custom report execution beyond the existing report definition storage unless required for Excel export."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

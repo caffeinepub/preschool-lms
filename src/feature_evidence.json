@@ -1,0 +1,89 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-replace-the-placeholder-excel-workflow-ui-with-functional-excel-template-generation-allow-users-to-select-a-form-and-download-an-xlsx-template-whose-columns-are-derived-from-the-selected-form-s-fields-including-an-instructions-sheet-in-the-workbook",
+      "featureTitle": "Replace the placeholder Excel workflow UI with functional Excel template generation: allow users to select a form and download an .xlsx template whose columns are derived from the selected form’s fields, including an instructions sheet in the workbook.",
+      "files": [
+        "frontend/src/components/excel/ExcelManager.tsx",
+        "frontend/src/utils/excelWorkbook.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-real-excel-import-allow-users-to-upload-a-filled-xlsx-file-parse-it-client-side-validate-rows-against-the-selected-form-definition-required-fields-field-types-show-a-preview-of-valid-invalid-rows-with-error-messages-and-then-import-valid-rows-into-the-backend-as-entity-records",
+      "featureTitle": "Implement real Excel import: allow users to upload a filled .xlsx file, parse it client-side, validate rows against the selected form definition (required fields, field types), show a preview of valid/invalid rows with error messages, and then import valid rows into the backend as entity records.",
+      "files": [
+        "frontend/src/components/excel/ExcelManager.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/utils/excelImport.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-real-excel-export-allow-users-to-export-existing-records-for-a-selected-form-to-a-downloadable-xlsx-file-with-a-consistent-column-order-based-on-the-form-definition-and-include-basic-metadata-columns-when-appropriate-e-g-record-id-createdat",
+      "featureTitle": "Implement real Excel export: allow users to export existing records for a selected form to a downloadable .xlsx file with a consistent column order based on the form definition and include basic metadata columns when appropriate (e.g., record id, createdAt).",
+      "files": [
+        "frontend/src/components/excel/ExcelManager.tsx",
+        "frontend/src/utils/excelExport.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-provide-a-production-deployment-workflow-for-the-internet-computer-document-and-verify-the-steps-to-build-and-deploy-the-frontend-and-backend-to-the-ic-mainnet-including-required-environment-variables-e-g-caffeine-admin-token-and-post-deploy-verification-steps",
+      "featureTitle": "Provide a production deployment workflow for the Internet Computer: document and verify the steps to build and deploy the frontend and backend to the IC mainnet, including required environment variables (e.g., CAFFEINE_ADMIN_TOKEN) and post-deploy verification steps.",
+      "files": [
+        "frontend/PRODUCTION_DEPLOYMENT.md"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

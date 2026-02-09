@@ -1,0 +1,60 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-03T10:04:41.394Z",
+  "summary": "Diff adds frontend Excel template generation/import/export using SheetJS loaded from a CDN, adds a production deployment guide, and introduces a backend migration module plus references to migration/storage mixins in backend/main.mo. However, the diff evidence does not show a backend bulk import API, and upgrade-safe stable persistence / upgrade hooks are not clearly evidenced in the truncated backend/main.mo excerpt.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "Implement upgrade-safe persistent storage in the Motoko backend so that forms, dropdown options, reports, entities, import history, and authorization state survive canister upgrades and restarts.",
+      "reason": "The shown backend/main.mo excerpt still defines runtime maps/state as `let forms = Map.empty...`, etc. The diff summary does not show `stable` variables or explicit persistence wiring for these collections; persistence may exist elsewhere in the truncated portion, but it is not evidenced here.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Add/modify backend upgrade hooks (and create backend/migration.mo only if necessary) to safely migrate existing in-memory data into stable storage during upgrade and restore it after upgrade.",
+      "reason": "A migration module is added and referenced via `(with migration = Migration.run)` in backend/main.mo, but the diff summary does not show any explicit preupgrade/postupgrade hooks or stable-state handoff/restore logic; it is therefore not verifiable from the provided excerpt whether upgrades will not trap and will restore correct data structures.",
+      "evidence": [
+        "backend/migration.mo",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Add necessary backend APIs to support bulk import efficiently (e.g., a bulk create endpoint and a structured response), while keeping existing single-record create and list APIs working unchanged.",
+      "reason": "Frontend import in ExcelManager explicitly imports valid rows 'one by one' via `useCreateEntity()` and there is no diff evidence of a new backend bulk-create endpoint or structured bulk response.",
+      "evidence": [
+        "frontend/src/components/excel/ExcelManager.tsx",
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Runtime loading of the SheetJS (xlsx) library from an external CDN (cdn.sheetjs.com) for template/import/export.",
+      "reason": "The BuildRequest asks for real Excel import/export/template generation but does not request (or mention) introducing a CDN-loaded third-party runtime dependency; this is an implementation choice added by the diff.",
+      "evidence": [
+        "frontend/src/utils/excelWorkbook.ts",
+        "frontend/src/utils/excelImport.ts",
+        "frontend/src/utils/excelExport.ts"
+      ]
+    }
+  ],
+  "confidence": 0.62,
+  "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "frontend-file-summaries.txt",
+    "frontend/PRODUCTION_DEPLOYMENT.md",
+    "frontend/src/components/excel/ExcelManager.tsx",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/types/xlsx.d.ts",
+    "frontend/src/utils/excelExport.ts",
+    "frontend/src/utils/excelImport.ts",
+    "frontend/src/utils/excelWorkbook.ts",
+    "project_state.json"
+  ]
+}
